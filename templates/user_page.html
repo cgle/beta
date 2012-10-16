@@ -1,0 +1,50 @@
+{% extends 'base.html' %}
+{% block title %}Koinbox - User: {{ username }}{% endblock %}
+{% block head %}This is the info page for {{ username }}{% endblock %}
+{% block content %}
+    <div id='wrapper1'>
+
+        <div id="wrapper_profile">
+            <p>Name: {{ user_info.get_profile.name }}
+                {% if show_edit %}
+                <a href="/edit/?username={{ user.username }}"
+                   class="edit-profile">[edit]</a>
+                {% endif %}
+            </p>
+            <p>Age: {{ user_info.get_profile.age }}</p>
+            <p>University: {{ user_info.get_profile.university }}</p>
+            <p>Home City: {{ user_info.get_profile.home_city }}</p>
+            <p>Destination City: {{ user_info.get_profile.away_city }}</p>
+        </div>
+
+        {%  if interests %}
+            <ul>
+            {% for interest in interests %}
+
+                <li>
+
+                    <p>Type of interest: {{ interest.type_interest }}
+                        {% if show_edit %}
+                            <a href="/interest/save/?type_interest={{ interest.type_interest }}&description={{ interest.description }}"
+                               class="edit">[edit]</a>
+                            <a href="/interest/delete/?type_interest={{ interest.type_interest }}&description={{ interest.description }}"
+                               class="delete">[delete]</a>
+                        {% endif %}
+                    </p>
+                    <p>Description: {{ interest.description }}</p>
+                    <p>Tags:
+                        {% for tag in interest.interest_tag_set.all %}
+                            {{ tag.name|escape }}
+                        {% endfor %}
+                    </p>
+                </li>
+            {% endfor %}
+            </ul>
+            <p><a href='/interest/save'>Add more interests!</a></p>
+        {% else %}
+            <p>No interests found. Start letting us know your <a href="/interest/save">interests</a>.</p>
+        {% endif %}
+    </div>
+
+
+{% endblock %}

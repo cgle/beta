@@ -1,0 +1,25 @@
+{% extends 'base.html' %}
+{% block title %}Koinbox - User: {{ user.username }}{% endblock %}
+{% block head %}Potential friends of {{ user.username }}{% endblock %}
+{% block content %}
+    <div id='wrapper1' xmlns="http://www.w3.org/1999/html">
+        <p>Following is the list of users that share your interest and reside where you want to travel to</p>
+        {%  if final_list %}
+            <ul>
+                {% for item in final_list %}
+
+                    <li>
+                        Username: <a href="/user/{{ item.username }}">{{ item.username }}</a></br>
+                        Name: {{ item.get_profile.name }} </br>
+                        Age: {{ item.get_profile.age }} </br>
+                        University: {{ item.get_profile.university }}
+                    </li>
+                {% endfor %}
+            </ul>
+        {% else %}
+            <p>No users fit in your koinbox found.</p>
+        {% endif %}
+    </div>
+
+
+{% endblock %}

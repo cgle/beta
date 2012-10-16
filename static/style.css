@@ -1,0 +1,43 @@
+
+#wrapper {
+    margin:0 auto;
+    width:960px;
+
+    padding-left:10px;
+    padding-right:10px;
+}
+
+#wrapper_profile{
+    border:1px solid #d2691e;
+    width:250px;
+    padding-left:10px;
+}
+#nav {
+    font-size: 105%;
+}
+
+h1 {
+    margin-top: 50px;
+    color:#a52a2a;
+}
+
+a {
+    font-weight: bold;
+    color:#0000cd;
+}
+
+input{
+    display: block;
+
+}
+.errorlist {
+    color:red;
+}
+.edit,.delete{
+    font-size: 85%;
+}
+
+#footer{
+    margin-top:50px;
+    color:#9400d3;
+}

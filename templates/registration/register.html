@@ -1,0 +1,67 @@
+{% extends "base.html" %}
+{% block title %}User Registration{% endblock %}
+{% block head %}User Registration{% endblock %}
+{% block content %}
+    {% if user.username %}
+        <p>You have already registered an account at Koinbox</p>
+    {% else %}
+        <form method="post" action=".">{% csrf_token %}
+
+            <div class="register_div">
+                {% if form.username.errors %}<p class="error">{{ form.username.errors }}</p>{% endif %}
+                <label for="username"{% if form.username.errors %} class="error"{% endif %}>Username:</label>
+                {{ form.username }}
+            </div>
+            </br>
+            <div class="register_div">
+                {% if form.email.errors %}<p class="error">{{ form.email.errors }}</p>{% endif %}
+                <label for="email"{% if form.email.errors %} class="error"{% endif %}>Email:</label>
+                {{ form.email }}
+            </div>
+            </br>
+            <div class="register_div">
+                {% if form.password1.errors %}<p class="error">{{ form.password1.errors }}</p>{% endif %}
+                <label for="password1"{% if form.password1.errors %} class="error"{% endif %}>Password:</label>
+                {{ form.password1 }}
+            </div>
+            </br>
+            <div class="register_div">
+                {% if form.password2.errors %}<p class="error">{{ form.password2.errors }}</p>{% endif %}
+                <label for="password2"{% if form.password2.errors %} class="error"{% endif %}>Verify Password:</label>
+                {{ form.password2 }}
+            </div>
+            </br>
+            <div class="register_div">
+                {% if form.name.errors %}<p class="error">{{ form.name.errors }}</p>{% endif %}
+                <label for="name"{% if form.name.errors %} class="error"{% endif %}>Name:</label>
+                {{ form.name }}
+            </div>
+            </br>
+            <div class="register_div">
+                {% if form.age.errors %}<p class="error">{{ form.age.errors }}</p>{% endif %}
+                <label for="age"{% if form.age.errors %} class="error"{% endif %}>Age:</label>
+                {{ form.age }}
+            </div>
+            </br>
+            <div class="register_div">
+                {% if form.university.errors %}<p class="error">{{ form.university.errors }}</p>{% endif %}
+                <label for="university"{% if form.university.errors %} class="error"{% endif %}>University:</label>
+                {{ form.university }}
+            </div>
+            </br>
+            <div class="register_div">
+                {% if form.home_city.errors %}<p class="error">{{ form.home_city.errors }}</p>{% endif %}
+                <label for="home_city"{% if form.home_city.errors %} class="error"{% endif %}>Home City:</label>
+                {{ form.home_city}}
+            </div>
+            </br>
+            <div class="register_div">
+                {% if form.away_city.errors %}<p class="error">{{ form.away_city.errors }}</p>{% endif %}
+                <label for="away_city"{% if form.away_city.errors %} class="error"{% endif %}>Destination City:</label>
+                {{ form.away_city }}
+            </div>
+            </br>
+            <input type="submit" value="register" />
+        </form>
+    {% endif %}
+{% endblock %}

@@ -1,0 +1,14 @@
+{% extends "base.html" %}
+{% block title %}Koinbox | An app by Gosuninjas{% endblock %}
+{% block head %}Welcome to Koinbox | An app by Gosuninjas{% endblock %}
+{% block content %}
+    {% if user.username %}
+        <p>Welcome {{ user.username }}!
+            Here you can find friends who share your interests!</p>
+    {% else %}
+        <p>Welcome anonymous user!
+            You need to <a href="/login/">login</a>
+            before you can use Koinbox.</p>
+    {% endif %}
+
+{% endblock %}
