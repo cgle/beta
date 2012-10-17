@@ -35,7 +35,7 @@ class RegistrationForm(ModelForm):
         raise forms.ValidationError('Passwords do not match.')
 
     def clean_username(self):
-        username = self.cleaned_data['username']
+        username = self.cleaned_data['username'].lower()
         if not re.search(r'^\w+$',username):
             raise forms.ValidationError('Wrong spellings')
         try:
