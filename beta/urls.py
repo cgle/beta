@@ -27,5 +27,8 @@ urlpatterns = patterns('',
     url(r'^interest/save/$','info.views.interest_save_page'),
     url(r'^interest/delete/$','info.views.delete_interest'),
     url(r'^edit/$','info.views.edit_profile'),
-    url(r'^koinbox/$','info.views.koinbox')
+    url(r'^koinbox/$','info.views.koinbox'),
+    url(r'^friends/$', 'info.views.friend_page'),
+    url(r'^friend/add/$', 'info.views.friend_add'),
+    url(r'^friend/delete/$', 'info.views.friend_delete'),
 )

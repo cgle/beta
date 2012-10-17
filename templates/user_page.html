@@ -2,7 +2,16 @@
 {% block title %}Koinbox - User: {{ username }}{% endblock %}
 {% block head %}This is the info page for {{ username }}{% endblock %}
 {% block content %}
-    <div id='wrapper1'>
+    <div id='wrapper1' xmlns="http://www.w3.org/1999/html">
+        {% ifnotequal user.username username %}
+            {% if is_friend %}
+                <p>{{ username }} is a friend of yours |
+                <a href="/friend/delete/?username={{ username }}">[Unfriend]{{ username }}</a></p>
+            {% else %}
+                <p><a href="/friend/add/?username={{ username }}">
+                    Add {{ username }} to your friends</a></p>
+            {% endif %}
+        {% endifnotequal %}
 
         <div id="wrapper_profile">
             <p>Name: {{ user_info.get_profile.name }}

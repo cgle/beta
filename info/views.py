@@ -4,7 +4,7 @@ from django.template import Context
 from django.template.loader import get_template
 from django.http import HttpResponse, Http404
 from django.contrib.auth.models import User
-from django.shortcuts import render_to_response
+from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect
 from django.contrib.auth import logout
 from info.forms import *
@@ -27,11 +27,18 @@ def about(request):
     return render_to_response('about.html',variables)
 
 def user_page(request,username):
+
     try:
         user_info = User.objects.get(username=username)
         user = request.user
     except:
         raise Http404('Requested user not found')
+
+    is_friend = Friendship.objects.filter(
+        from_friend=user,
+        to_friend=user_info
+    )
+
     user_interest = user_info.interest_set.all()
     template = get_template('user_page.html')
     variables = Context({
@@ -40,6 +47,7 @@ def user_page(request,username):
         'username':username,
         'interests':user_interest,
         'show_edit': username == request.user.username,
+        'is_friend':is_friend
     })
     output = template.render(variables)
     return HttpResponse(output)
@@ -194,15 +202,63 @@ def koinbox(request):
                         their_interest.remove(item1)
                         count+=1.0
 
-        if count/(len(request.user.interest_set.all())+0.0000001)>0.8:
+        if count/(len(request.user.interest_set.all())+0.0000001)>0.75:
             final_list.append(user)
+
     variables = Context({
         'user':request.user,
         'final_list':final_list,
-
     })
     template=get_template('koinbox.html')
     output=template.render(variables)
     return HttpResponse(output)
 
+
+@login_required()
+def friend_page(request):
+    user=request.user
+    friends=\
+        [friendship.to_friend for friendship in user.friend_set.all()]
+    friend_interest = \
+        Interest.objects.filter(user__in=friends).order_by('-id')
+    variables = RequestContext(request,{
+        'username':user.username,
+        'friends':friends,
+        'interests':friend_interest,
+        'show_tags':True,
+        'show_users':True
+    })
+    return render_to_response('friend_page.html',variables)
+@login_required()
+def friend_add(request):
+    if request.GET.has_key('username'):
+        friend =\
+            get_object_or_404(User, username=request.GET['username'])
+        friendship = Friendship(
+            from_friend=request.user,
+            to_friend=friend
+        )
+        friendship.save()
+        return HttpResponseRedirect(
+            '/friends/'
+        )
+    else:
+        raise Http404
+
+@login_required()
+def friend_delete(request):
+    if request.method=='GET':
+        if request.GET.has_key('username'):
+            friend =\
+                get_object_or_404(User, username=request.GET['username'])
+            friendship = Friendship.objects.get(
+                from_friend=request.user,
+                to_friend=friend
+            )
+            friendship.delete()
+            return HttpResponseRedirect(
+                '/friends/'
+            )
+        else:
+            raise Http404
 
