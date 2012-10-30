@@ -14,7 +14,7 @@ class UserResource(ModelResource):
         queryset = User.objects.all()
         allowed_methods = ['get']
         excludes=['email','password','is_active','is_staff','is_superuser','id']
-        authentication = BasicAuthentication()
+        authentication = ApiKeyAuthentication()
         authorization = Authorization()
         filtering = {
             'username': ALL,
@@ -24,10 +24,16 @@ class UserProfileResource(ModelResource):
     user = fields.ForeignKey(UserResource,'user')
     class Meta:
         queryset = UserProfile.objects.all()
+        allowed_methods = ['get']
+        authentication  = BasicAuthentication()
         authorization = Authorization()
         filtering = {
             'user': ALL_WITH_RELATIONS
         }
+    def obj_create(self, bundle, request=None, **kwargs):
+        return super(EnvironmentResource, self).obj_create(bundle, request, user=request.user)
+    def apply_authorization_limits(self, request, object_list):
+        return object_list.filter(user=request.user)
 
 class InterestResource(ModelResource):
     user = fields.ForeignKey(UserResource,'user')
@@ -44,6 +50,7 @@ class InterestTagResource(ModelResource):
     interest = fields.ManyToManyField(InterestResource,'interests')
     class Meta:
         queryset = Interest_Tag.objects.all()
+        authentication = BasicAuthentication()
         authorization = Authorization()
         filtering = {
             'interests': ALL_WITH_RELATIONS

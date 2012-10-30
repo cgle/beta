@@ -11,6 +11,7 @@ from info.forms import *
 from info.models import *
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
+from tastypie.models import ApiKey
 
 
 def home(request):
@@ -38,10 +39,11 @@ def user_page(request,username):
         from_friend=user,
         to_friend=user_info
     )
-
+    api=ApiKey.objects.get(user=request.user)
     user_interest = user_info.interest_set.all()
     template = get_template('user_page.html')
     variables = Context({
+        'api':api,
         'user':request.user,
         'user_info':user_info,
         'username':username,
@@ -179,6 +181,8 @@ def _save_interest(request,form):
 def delete_interest(request):
     if request.method=='GET':
         interest=Interest.objects.get(user=request.user,description=request.GET['description'],type_interest = request.GET['type_interest'])
+        tags=interest.interest_tag_set.all()
+        tags.delete()
         interest.delete()
     return HttpResponseRedirect(
         '/user/%s/' % request.user.username)

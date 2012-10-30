@@ -18,6 +18,7 @@
                 {% if show_edit %}
                 <a href="/edit/?username={{ user.username }}"
                    class="edit-profile">[edit]</a>
+                <p>Api Key: {{ api.key }}</p>
                 {% endif %}
             </p>
             <p>Age: {{ user_info.get_profile.age }}</p>
