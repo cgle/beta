@@ -14,6 +14,7 @@ from django.contrib.auth.decorators import login_required
 from tastypie.models import ApiKey
 
 
+
 def home(request):
     variables = {
         'head_title':'Koinbox | An app by Gosuninjas',
@@ -206,17 +207,36 @@ def koinbox(request):
                         their_interest.remove(item1)
                         count+=1.0
 
-        if count/(len(request.user.interest_set.all())+0.0000001)>0.75:
+        if count/(len(request.user.interest_set.all())+0.0000001)>=0.75:
             final_list.append(user)
-
     variables = Context({
         'user':request.user,
         'final_list':final_list,
-    })
-    template=get_template('koinbox.html')
-    output=template.render(variables)
-    return HttpResponse(output)
+        })
+    return render_to_response('koinbox.html',variables)
 
+def koinbox1(request):
+    user_list=User.objects.all()
+    user_list=list(user_list)
+    final_list=[]
+    user_list.remove(request.user)
+    for user in user_list:
+        count=0.0
+        my_destination=request.user.get_profile().away_city
+        their_location=user.get_profile().home_city
+        if my_destination.lower()==their_location.lower():
+            my_interest=list(request.user.interest_set.all())
+            their_interest=list(user.interest_set.all())
+
+            for item in my_interest:
+                for item1 in their_interest:
+                    if item.description.lower()==item1.description.lower():
+                        their_interest.remove(item1)
+                        count+=1.0
+
+        if count/(len(request.user.interest_set.all())+0.0000001)>=0.75:
+            final_list.append(user)
+    return final_list
 
 @login_required()
 def friend_page(request):
@@ -233,6 +253,7 @@ def friend_page(request):
         'show_users':True
     })
     return render_to_response('friend_page.html',variables)
+
 @login_required()
 def friend_add(request):
     if request.GET.has_key('username'):

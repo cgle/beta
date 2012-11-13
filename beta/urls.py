@@ -1,15 +1,20 @@
 from django.conf.urls import patterns, include, url
 import os.path
 from django.conf.urls import *
-from api.resources import UserResource, UserProfileResource, InterestResource, InterestTagResource
+from api.resources import UserResource, UserProfileResource, InterestResource, InterestTagResource, MyKoinboxResource, UserSignUpResource, CreateUserProfileResource, OtherUserInterestResource, OtherUserInterestTagResource, OtherUserProfileResource
 
 from tastypie.api import Api
 
 v1_api = Api(api_name='v1')
 v1_api.register(UserResource())
+v1_api.register(MyKoinboxResource())
 v1_api.register(UserProfileResource())
 v1_api.register(InterestResource())
 v1_api.register(InterestTagResource())
+v1_api.register(UserSignUpResource())
+v1_api.register(CreateUserProfileResource())
+v1_api.register(OtherUserProfileResource())
+v1_api.register(OtherUserInterestResource())
 
 static = os.path.join(
     os.path.dirname(__file__),'static'
