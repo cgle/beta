@@ -6,12 +6,13 @@ from django.http import HttpResponse, Http404
 from django.contrib.auth.models import User
 from django.shortcuts import render_to_response, get_object_or_404
 from django.http import HttpResponseRedirect
-from django.contrib.auth import logout
+from django.contrib.auth import logout, authenticate, login
 from info.forms import *
 from info.models import *
 from django.template import RequestContext
 from django.contrib.auth.decorators import login_required
 from tastypie.models import ApiKey
+from django.views.decorators.csrf import csrf_exempt
 
 
 
@@ -59,6 +60,24 @@ def user_page(request,username):
 def logout_page(request):
     logout(request)
     return HttpResponseRedirect('/')
+
+@csrf_exempt
+def login_page(request):
+    state = "Please log in below..."
+    username = password = ''
+    if request.POST:
+        username = request.POST.get('username')
+        password = request.POST.get('password')
+
+        user = authenticate(username=username, password=password)
+        if user is not None:
+            if user.is_active:
+                login(request, user)
+                state = "You're successfully logged in!"
+            else:
+                state = "Your account is not active, please contact the site admin."
+        else:
+            state = "Your username and/or password were incorrect."
 
 def register_page(request):
     if request.method=='POST':
@@ -208,35 +227,16 @@ def koinbox(request):
                         count+=1.0
 
         if count/(len(request.user.interest_set.all())+0.0000001)>=0.75:
+            koinbox_user = KoinboxUser.objects.get_or_create(user=request.user,koinbox_username=user.username,username=request.user.username)
             final_list.append(user)
+        else:
+            KoinboxUser.objects.filter(user=request.user,koinbox_username=user.username,username=request.user.username).delete()
+
     variables = Context({
         'user':request.user,
         'final_list':final_list,
         })
     return render_to_response('koinbox.html',variables)
-
-def koinbox1(request):
-    user_list=User.objects.all()
-    user_list=list(user_list)
-    final_list=[]
-    user_list.remove(request.user)
-    for user in user_list:
-        count=0.0
-        my_destination=request.user.get_profile().away_city
-        their_location=user.get_profile().home_city
-        if my_destination.lower()==their_location.lower():
-            my_interest=list(request.user.interest_set.all())
-            their_interest=list(user.interest_set.all())
-
-            for item in my_interest:
-                for item1 in their_interest:
-                    if item.description.lower()==item1.description.lower():
-                        their_interest.remove(item1)
-                        count+=1.0
-
-        if count/(len(request.user.interest_set.all())+0.0000001)>=0.75:
-            final_list.append(user)
-    return final_list
 
 @login_required()
 def friend_page(request):
@@ -263,6 +263,7 @@ def friend_add(request):
             from_friend=request.user,
             to_friend=friend
         )
+        friend1=Friends.objects.get_or_create(user=request.user,username=request.user.username,friend_username=User.objects.get(username=request.GET['username']).username)
         friendship.save()
         return HttpResponseRedirect(
             '/friends/'
@@ -280,6 +281,7 @@ def friend_delete(request):
                 from_friend=request.user,
                 to_friend=friend
             )
+            Friends.objects.filter(user=request.user,username=request.user.username,friend_username=friend.username).delete()
             friendship.delete()
             return HttpResponseRedirect(
                 '/friends/'

@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 import os.path
 from django.conf.urls import *
-from api.resources import UserResource, UserProfileResource, InterestResource, InterestTagResource, MyKoinboxResource, UserSignUpResource, CreateUserProfileResource, OtherUserInterestResource, OtherUserInterestTagResource, OtherUserProfileResource
+from api.resources import UserResource, FriendResource, CreateInterestResource, UserProfileResource, InterestResource, InterestTagResource, MyKoinboxResource, UserSignUpResource, CreateUserProfileResource, OtherUserInterestResource, OtherUserInterestTagResource, OtherUserProfileResource
 
 from tastypie.api import Api
 
@@ -10,8 +10,10 @@ v1_api.register(UserResource())
 v1_api.register(MyKoinboxResource())
 v1_api.register(UserProfileResource())
 v1_api.register(InterestResource())
+v1_api.register(FriendResource())
 v1_api.register(InterestTagResource())
 v1_api.register(UserSignUpResource())
+v1_api.register(CreateInterestResource())
 v1_api.register(CreateUserProfileResource())
 v1_api.register(OtherUserProfileResource())
 v1_api.register(OtherUserInterestResource())
@@ -36,6 +38,7 @@ urlpatterns = patterns('',
     url(r'^user/(\w+)/$','info.views.user_page', name='user_page'),
     url(r'^login/$','django.contrib.auth.views.login'),
     url(r'^logout/$','info.views.logout_page'),
+    url(r'^login_page/$','info.views.login_page'),
     url(r'^static/(?P<path>.*)$','django.views.static.serve',
     {'document_root': static}),
     url(r'^register/$', 'info.views.register_page'),

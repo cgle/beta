@@ -1,13 +1,12 @@
 __author__ = 'milkyway'
 from tastypie.resources import ModelResource, Resource, ALL, ALL_WITH_RELATIONS
 from tastypie.authentication import BasicAuthentication, ApiKeyAuthentication
-from tastypie.authorization import Authorization
+from tastypie.authorization import Authorization, DjangoAuthorization
 from django.db import models
 from django.contrib.auth.models import User
-from info.models import UserProfile,Interest, Interest_Tag
+from info.models import UserProfile,Interest, Interest_Tag, KoinboxUser, Friends
 from tastypie.models import create_api_key
 from tastypie import fields
-from info.views import koinbox1
 
 models.signals.post_save.connect(create_api_key, sender=User)
 class UserResource(ModelResource):
@@ -19,21 +18,26 @@ class UserResource(ModelResource):
         filtering = {
             'username': ALL,
             }
-class MyKoinboxResource(Resource):
+
+class MyKoinboxResource(ModelResource):
     user = fields.ForeignKey(UserResource,'user')
     class Meta:
-        queryset =koinbox1()
+        queryset = KoinboxUser.objects.all()
         allowed_methods = ['get']
-        excludes=['email','is_active','is_staff','is_superuser','id']
-        authentication  = BasicAuthentication()
         authorization = Authorization()
         filtering = {
             'username': ALL,
             }
-    def obj_create(self, bundle, request=None, **kwargs):
-        return super(EnvironmentResource, self).obj_create(bundle, request, user=request.user)
-    def apply_authorization_limits(self, request, object_list):
-        return object_list.filter(user=request.user)
+
+class FriendResource(ModelResource):
+    user = fields.ForeignKey(UserResource,'user')
+    class Meta:
+        queryset = Friends.objects.all()
+        allowed_methods = ['get']
+        authorization = Authorization()
+        filtering = {
+            'username': ALL,
+            }
 
 class UserProfileResource(ModelResource):
     user = fields.ForeignKey(UserResource,'user')
@@ -77,7 +81,7 @@ class InterestResource(ModelResource):
 
     class Meta:
         queryset = Interest.objects.all()
-        allowed_methods = ['get','post']
+        allowed_methods = ['get']
         authentication  = BasicAuthentication()
         authorization = Authorization()
         filtering = {
@@ -87,6 +91,17 @@ class InterestResource(ModelResource):
         return super(EnvironmentResource, self).obj_create(bundle, request, user=request.user)
     def apply_authorization_limits(self, request, object_list):
         return object_list.filter(user=request.user)
+
+class CreateInterestResource(ModelResource):
+    user = fields.ForeignKey(UserResource,'user')
+    class Meta:
+        queryset = Interest.objects.all()
+        allowed_methods = ['get','post','put','delete']
+        resource_name = 'createinterest'
+        authorization = Authorization()
+        filtering = {
+            'user': ALL_WITH_RELATIONS
+        }
 
 class OtherUserInterestResource(ModelResource):
     user = fields.ForeignKey(UserResource,'user')

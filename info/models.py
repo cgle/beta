@@ -12,6 +12,19 @@ class UserProfile(models.Model):
     def __unicode__(self):
         return u'Profile of user: %s' % self.user.username
 
+class KoinboxUser(models.Model):
+    user = models.ForeignKey(User)
+    koinbox_username = models.CharField(max_length=50)
+    username = models.CharField(max_length=50)
+    def __str__(self):
+        return self.koinbox_username
+
+class Friends(models.Model):
+    user = models.ForeignKey(User)
+    username = models.CharField(max_length=50)
+    friend_username = models.CharField(max_length=50)
+    def __str__(self):
+        return self.friend_username
 
 class Interest(models.Model):
     user = models.ForeignKey(User)
