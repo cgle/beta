@@ -15,7 +15,7 @@ MANAGERS = ADMINS
 DATABASES = {
     'default': {
         'ENGINE': 'django.db.backends.sqlite3', # Add 'postgresql_psycopg2', 'mysql', 'sqlite3' or 'oracle'.
-        'NAME': 'koinbox.db',                      # Or path to database file if using sqlite3.
+        'NAME': '/home/dotcloud/koinbox.db',                      # Or path to database file if using sqlite3.
         #/home/dotcloud/koinbox.db
         # The following settings are not used with sqlite3:
         'USER': '',
@@ -99,7 +99,9 @@ MIDDLEWARE_CLASSES = (
     'django.contrib.sessions.middleware.SessionMiddleware',
     'django.middleware.csrf.CsrfViewMiddleware',
     'django.contrib.auth.middleware.AuthenticationMiddleware',
+    'django.contrib.sessions.middleware.SessionMiddleware',
     'django.contrib.messages.middleware.MessageMiddleware',
+
     # Uncomment the next line for simple clickjacking protection:
     # 'django.middleware.clickjacking.XFrameOptionsMiddleware',
 )
@@ -122,7 +124,9 @@ INSTALLED_APPS = (
     'django.contrib.staticfiles',
     # Uncomment the next line to enable the admin:
     'django.contrib.admin',
+
     'info',
+    'messages',
     'tastypie'
     # Uncomment the next line to enable admin documentation:
     # 'django.contrib.admindocs',

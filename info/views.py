@@ -226,7 +226,7 @@ def koinbox(request):
                         their_interest.remove(item1)
                         count+=1.0
 
-        if count/(len(request.user.interest_set.all())+0.0000001)>=0.75:
+        if count/(len(request.user.interest_set.all())+0.0000001)>=0.75 or (count/(len(user.interest_set.all())+0.0000001)>=0.75):
             koinbox_user = KoinboxUser.objects.get_or_create(user=request.user,koinbox_username=user.username,username=request.user.username)
             final_list.append(user)
         else:
@@ -263,7 +263,12 @@ def friend_add(request):
             from_friend=request.user,
             to_friend=friend
         )
+        friendship1 = Friendship(
+            from_friend=friend,
+            to_friend=request.user
+        )
         friend1=Friends.objects.get_or_create(user=request.user,username=request.user.username,friend_username=User.objects.get(username=request.GET['username']).username)
+        frientship1.save()
         friendship.save()
         return HttpResponseRedirect(
             '/friends/'

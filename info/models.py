@@ -55,3 +55,11 @@ class Friendship(models.Model):
         pass
     class Meta:
         unique_together = (('to_friend', 'from_friend'), )
+
+class Msm(models.Model):
+    sender = models.CharField(max_length=60)
+    recipient_username = models.CharField(max_length=60)
+    subject=models.CharField(max_length=120)
+    body=models.CharField(max_length=250)
+    def __str__(self):
+        return '%s,%s, %s, %s' %(sender, recipient_username, subject, body)

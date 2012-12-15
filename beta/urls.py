@@ -1,7 +1,7 @@
 from django.conf.urls import patterns, include, url
 import os.path
 from django.conf.urls import *
-from api.resources import UserResource, FriendResource, CreateInterestResource, UserProfileResource, InterestResource, InterestTagResource, MyKoinboxResource, UserSignUpResource, CreateUserProfileResource, OtherUserInterestResource, OtherUserInterestTagResource, OtherUserProfileResource
+from api.resources import UserResource, FriendResource, MessageResource, CreateInterestResource, UserProfileResource, InterestResource, InterestTagResource, MyKoinboxResource, UserSignUpResource, CreateUserProfileResource, OtherUserInterestResource, OtherUserInterestTagResource, OtherUserProfileResource
 
 from tastypie.api import Api
 
@@ -17,7 +17,7 @@ v1_api.register(CreateInterestResource())
 v1_api.register(CreateUserProfileResource())
 v1_api.register(OtherUserProfileResource())
 v1_api.register(OtherUserInterestResource())
-
+v1_api.register(MessageResource())
 static = os.path.join(
     os.path.dirname(__file__),'static'
 )
@@ -50,5 +50,6 @@ urlpatterns = patterns('',
     url(r'^friends/$', 'info.views.friend_page'),
     url(r'^friend/add/$', 'info.views.friend_add'),
     url(r'^friend/delete/$', 'info.views.friend_delete'),
-    url(r'^api/',include(v1_api.urls))
+    url(r'^api/',include(v1_api.urls)),
+    (r'^messages/', include('messages.urls')),
 )

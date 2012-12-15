@@ -4,7 +4,7 @@ from tastypie.authentication import BasicAuthentication, ApiKeyAuthentication
 from tastypie.authorization import Authorization, DjangoAuthorization
 from django.db import models
 from django.contrib.auth.models import User
-from info.models import UserProfile,Interest, Interest_Tag, KoinboxUser, Friends
+from info.models import UserProfile,Interest, Interest_Tag, KoinboxUser, Friends, Msm
 from tastypie.models import create_api_key
 from tastypie import fields
 
@@ -15,6 +15,7 @@ class UserResource(ModelResource):
         allowed_methods = ['get']
         excludes=['email','is_active','is_staff','is_superuser','id']
         authorization = Authorization()
+        limit = 0
         filtering = {
             'username': ALL,
             }
@@ -25,6 +26,7 @@ class MyKoinboxResource(ModelResource):
         queryset = KoinboxUser.objects.all()
         allowed_methods = ['get']
         authorization = Authorization()
+        limit = 0
         filtering = {
             'username': ALL,
             }
@@ -34,6 +36,7 @@ class FriendResource(ModelResource):
     class Meta:
         queryset = Friends.objects.all()
         allowed_methods = ['get']
+        limit = 0
         authorization = Authorization()
         filtering = {
             'username': ALL,
@@ -44,6 +47,7 @@ class UserProfileResource(ModelResource):
     class Meta:
         queryset = UserProfile.objects.all()
         allowed_methods = ['get']
+        limit = 0
         authentication  = BasicAuthentication()
         authorization = Authorization()
         filtering = {
@@ -59,6 +63,7 @@ class OtherUserProfileResource(ModelResource):
     class Meta:
         queryset = UserProfile.objects.all()
         allowed_methods = ['get']
+        limit = 0
         authorization = Authorization()
         filtering = {
             'user': ALL_WITH_RELATIONS
@@ -71,6 +76,7 @@ class CreateUserProfileResource(ModelResource):
         queryset = UserProfile.objects.all()
         allowed_methods = ['post','put']
         resource_name = 'createprofile'
+        limit = 0
         authorization = Authorization()
         filtering = {
             'user': ALL_WITH_RELATIONS
@@ -81,6 +87,7 @@ class InterestResource(ModelResource):
 
     class Meta:
         queryset = Interest.objects.all()
+        limit = 0
         allowed_methods = ['get']
         authentication  = BasicAuthentication()
         authorization = Authorization()
@@ -97,6 +104,7 @@ class CreateInterestResource(ModelResource):
     class Meta:
         queryset = Interest.objects.all()
         allowed_methods = ['get','post','put','delete']
+        limit = 0
         resource_name = 'createinterest'
         authorization = Authorization()
         filtering = {
@@ -110,6 +118,7 @@ class OtherUserInterestResource(ModelResource):
         queryset = Interest.objects.all()
         allowed_methods = ['get']
         authorization = Authorization()
+        limit = 0
         filtering = {
             'user': ALL_WITH_RELATIONS
         }
@@ -119,6 +128,7 @@ class InterestTagResource(ModelResource):
     class Meta:
         queryset = Interest_Tag.objects.all()
         allowed_methods = ['get','post']
+        limit = 0
         authentication = BasicAuthentication()
         authorization = Authorization()
         filtering = {
@@ -132,6 +142,7 @@ class OtherUserInterestTagResource(ModelResource):
         queryset = Interest_Tag.objects.all()
         allowed_methods = ['get']
         authorization = Authorization()
+        limit = 0
         filtering = {
             'interests': ALL_WITH_RELATIONS
         }
@@ -154,3 +165,14 @@ class UserSignUpResource(ModelResource):
         except IntegrityError:
             raise BadRequest('The username already exists')
         return bundle
+
+class MessageResource(ModelResource):
+    class Meta:
+        queryset = Msm.objects.all()
+        allowed_methods = ['get','post','delete']
+        limit = 0
+        authorization = Authorization()
+        filtering = {
+            'sender': ALL,
+            'recipient_username':ALL
+        }
